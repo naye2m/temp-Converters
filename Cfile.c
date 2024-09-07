@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 float convertTemperature(float temp, char from, char to) {
     if (from == to) {
@@ -21,40 +22,50 @@ float convertTemperature(float temp, char from, char to) {
         case 'k':
             return temp + 273.15; // Convert Celsius to Kelvin
         // 'c' (Celsius) requires no conversion
+        default:
+            return temp;
     }
 
     return temp;
 }
 
-int main() {
+int main(int argc, char **argv) {
     float temp, output;
     char inputUnit, outputUnit;
-    int isInfinite = 0; // enter bools
-    
-    while (isInfinite | 1) {
-        printf("\nEnter input unit (f/c/k): ");
-        scanf(" %c", &inputUnit);
 
-        if (inputUnit != 'f' && inputUnit != 'c' && inputUnit != 'k') {
-            printf("Invalid input unit! Please try again.\n");
-            continue;
+    if (argc == 4) {
+        // CLI input mode
+        inputUnit = argv[1][0];
+        temp = atof(argv[2]);
+        outputUnit = argv[3][0];
+    } else {
+        // Interactive mode
+        while (1) {
+            printf("\nEnter input unit (f/c/k): \n");
+            scanf(" %c", &inputUnit);
+
+            if (inputUnit != 'f' && inputUnit != 'c' && inputUnit != 'k') {
+                printf("Invalid input unit! Please try again.\n");
+                continue;
+            }
+
+            printf("Enter temperature value in %c: \n", inputUnit);
+            scanf("%f", &temp);
+
+            printf("Enter desired output unit (f/c/k): \n");
+            scanf(" %c", &outputUnit);
+
+            if (outputUnit != 'f' && outputUnit != 'c' && outputUnit != 'k') {
+                printf("Invalid output unit! Please try again.\n");
+                continue;
+            }
+
+            break;
         }
-
-        printf("Enter temperature value in %c: ", inputUnit);
-        scanf("%f", &temp);
-
-        printf("Enter desired output unit (f/c/k): ");
-        scanf(" %c", &outputUnit);
-
-        if (outputUnit != 'f' && outputUnit != 'c' && outputUnit != 'k') {
-            printf("Invalid output unit! Please try again.\n");
-            continue;
-        }
-
-        output = convertTemperature(temp, inputUnit, outputUnit);
-        printf("Converted temperature: %.2f%c\n", output, outputUnit);
-        break;
     }
+
+    output = convertTemperature(temp, inputUnit, outputUnit);
+    printf("Converted temperature: %.2f%c\n", output, outputUnit);
 
     return 0;
 }
